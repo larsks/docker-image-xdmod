@@ -1,0 +1,8 @@
+[client-server]
+socket = /run/mysqld/mysqld.sock
+
+[mariadbd]
+skip-host-cache
+
+!includedir /etc/mysql/mariadb.conf.d/
+!includedir /etc/mysql/conf.d/

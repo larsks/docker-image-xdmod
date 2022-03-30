@@ -1,0 +1,6 @@
+[mysqld]
+sql_mode = ''
+max_allowed_packet = 1G
+group_concat_max_len = 16M
+innodb_stats_on_metadata = off
+innodb_file_per_table = On

@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  mariadb:
+    image: docker.io/mariadb:10
+    environment:
+      MARIADB_USER: $MARIADB_USER
+      MARIADB_PASSWORD: $MARIADB_PASSWORD
+      MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+      MARIADB_DATABASE: $MARIADB_DATABASE
+    volumes:
+      - "./mariadb/mariadb.cnf:/etc/mysql/mariadb.cnf:z"
+      - "./mariadb/init.d:/docker-entrypoint-initdb.d:z"
+      - "./mariadb/conf.d:/etc/mysql/conf.d:z"
+      - "mariadb-data:/var/lib/mysql"
+
+  xdmod:
+    build:
+      context: .
+    environment:
+      XDMOD_DB_HOST: mariadb
+      XDMOD_DB_USER: $MARIADB_USER
+      XDMOD_DB_PASSWORD: $MARIADB_PASSWORD
+      XDMOD_DB_ROOT_USER: root
+      XDMOD_DB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+      XDMOD_ADMIN_USERNAME: xdmod-admin
+      XDMOD_ADMIN_PASSWORD: secret
+      XDMOD_ADMIN_FIRSTNAME: Xdmod
+      XDMOD_ADMIN_LASTNAME: Admin
+      XDMOD_ADMIN_EMAIL: xdmod-admin@massopen.cloud
+      XDMOD_PORTAL_SETTINGS_GENERAL__SITE_ADDRESS: http://localhost
+      XDMOD_PORTAL_SETTINGS_GENERAL__USER_MANUAL: http://localhost/user_manual/
+      XDMOD_PORTAL_SETTINGS_GENERAL__DEBUG_RECIPIENT: xdmod-debug@massopen.cloud
+      XDMOD_PORTAL_SETTINGS_REPORTING__CHROMIUM_PATH: "/usr/lib64/chromium-browser/headless_shell"
+    volumes:
+      - "xdmod-config:/etc/xdmod"
+      - "php-fpm:/run/php-fpm"
+      - "./xdmod/config:/config/xdmod"
+    command:
+      - /usr/sbin/php-fpm
+      - -F
+
+  apache:
+    build:
+      context: .
+    volumes:
+      - "php-fpm:/run/php-fpm"
+    ports:
+      - "8080:8080"
+    entrypoint:
+      - httpd
+      - -DFOREGROUND
+
+volumes:
+  mariadb-data:
+  xdmod-config:
+  php-fpm:

@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+
+spawn xdmod-setup
+
+expect "q):" {send "5\r"}
+expect "Username:" {send "$env(XDMOD_ADMIN_USERNAME)\r"}
+expect "Password:" {send "$env(XDMOD_ADMIN_PASSWORD)\r"}
+expect "(confirm) Password:" {send "$env(XDMOD_ADMIN_PASSWORD)\r"}
+expect "First name:" {send "$env(XDMOD_ADMIN_FIRSTNAME)\r"}
+expect "Last name:" {send "$env(XDMOD_ADMIN_LASTNAME)\r"}
+expect "Email address:" {send "$env(XDMOD_ADMIN_EMAIL)\r"}
+expect "Press ENTER to continue." {send "\r"}
+expect "q):" {send "q\r"}
+expect EOF

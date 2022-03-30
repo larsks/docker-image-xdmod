@@ -1,0 +1,28 @@
+#!/usr/bin/expect -f
+
+set timeout 300
+spawn xdmod-setup
+
+expect "q):" {send "2\r"}
+expect "DB Hostname or IP:" {send "\r"}
+expect "DB Port:" {send "\r"}
+expect "DB Username:" {send "\r"}
+expect "DB Password:" {send "$env(XDMOD_DB_PASSWORD)\r"}
+expect "(confirm) DB Password:" {send "$env(XDMOD_DB_PASSWORD)\r"}
+expect "DB Admin Username:" {send "\r"}
+expect "DB Admin Password:" {send "$env(XDMOD_DB_ROOT_PASSWORD)\r"}
+expect "(confirm) DB Admin Password:" {send "$env(XDMOD_DB_ROOT_PASSWORD)\r"}
+
+while {1} {
+	expect {
+		"Drop and recreate database" {send "yes\r"}
+		"Overwrite config file" {send "yes\r"}
+		"Press ENTER to continue." {
+			send "\r"
+				break
+		}
+	}
+}
+
+expect "q):" {send "q\r"}
+expect EOF
